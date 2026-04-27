@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Дослідження ринку професійної косметики — Україна 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg: #0a0c10; --card: #12151c; --border: #1e2330;
+  --accent: #c8a97e; --accent-light: #e8d5b5; --accent-dim: #c8a97e22;
+  --text: #e8e6e1; --muted: #8b8d93; --dim: #5a5c63;
+  --green: #4ecdc4; --red: #ff6b6b; --blue: #5b9bd5;
+  --purple: #9b7ed8; --orange: #f4a261; --pink: #e07c9a;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', -apple-system, sans-serif; }
+.header { background: linear-gradient(135deg, var(--card), var(--bg)); border-bottom: 1px solid var(--border); padding: 20px 32px; }
+.header h1 { font-size: 20px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+.header h1 span { color: var(--accent); }
+.header p { color: var(--muted); font-size: 12px; margin-top: 4px; }
+.tabs { display: flex; gap: 2px; padding: 0 32px; background: var(--card); border-bottom: 1px solid var(--border); overflow-x: auto; }
+.tab { background: transparent; color: var(--muted); border: none; border-bottom: 2px solid transparent; padding: 12px 18px; cursor: pointer; font-size: 13px; font-weight: 600; font-family: inherit; white-space: nowrap; transition: all .2s; display: flex; align-items: center; gap: 6px; }
+.tab:hover { color: var(--text); }
+.tab.active { background: var(--bg); color: var(--accent); border-bottom-color: var(--accent); }
+.content { padding: 28px 32px; max-width: 1200px; margin: 0 auto; }
+.page { display: none; }
+.page.active { display: block; animation: fadeIn .3s; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.section-title { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+.section-sub { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
+.grid { display: grid; gap: 16px; margin-bottom: 28px; }
+.g2 { grid-template-columns: 1fr 1fr; }
+.g3 { grid-template-columns: repeat(3, 1fr); }
+.g4 { grid-template-columns: repeat(4, 1fr); }
+.g5 { grid-template-columns: repeat(5, 1fr); }
+.g6 { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+.card-accent { background: linear-gradient(135deg, var(--accent-dim), #c8a97e08); border-color: #c8a97e40; }
+.metric-label { color: var(--muted); font-size: 11px; font-weight: 500; letter-spacing: .05em; text-transform: uppercase; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+.metric-value { font-size: 28px; font-weight: 700; color: var(--text); }
+.metric-value.accent { color: var(--accent); }
+.metric-sub { color: var(--dim); font-size: 11px; margin-top: 2px; }
+.insight { border-left: 3px solid var(--accent); background: #c8a97e08; border-radius: 0 10px 10px 0; padding: 16px 20px; margin-bottom: 16px; }
+.insight-title { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 6px; }
+.insight p { font-size: 14px; line-height: 1.6; color: var(--text); }
+.insight.green { border-color: var(--green); background: #4ecdc408; }
+.insight.green .insight-title { color: var(--green); }
+.insight.red { border-color: var(--red); background: #ff6b6b08; }
+.insight.red .insight-title { color: var(--red); }
+.insight.purple { border-color: var(--purple); background: #9b7ed808; }
+.insight.purple .insight-title { color: var(--purple); }
+.insight.blue { border-color: var(--blue); background: #5b9bd508; }
+.insight.blue .insight-title { color: var(--blue); }
+.insight .insight-title { color: var(--accent); }
+.chart-container { position: relative; height: 280px; }
+.chart-sm { height: 220px; }
+.funnel-row { margin-bottom: 14px; }
+.funnel-label { display: flex; justify-content: space-between; margin-bottom: 4px; }
+.funnel-label span:first-child { color: var(--muted); font-size: 12px; }
+.funnel-label span:last-child { font-size: 13px; font-weight: 600; }
+.funnel-bar { border-radius: 4px; height: 8px; }
+.pos-card { text-align: center; padding: 16px; }
+.pos-card .icon { font-size: 28px; margin-bottom: 8px; }
+.pos-card .title { color: var(--accent); font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+.pos-card .desc { color: var(--muted); font-size: 11px; line-height: 1.4; }
+.trend-card { border-top: 3px solid var(--accent); }
+.trend-card .head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.trend-card .head h4 { font-size: 15px; font-weight: 600; }
+.trend-badge { font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 6px; }
+.trend-card p { color: var(--muted); font-size: 12px; line-height: 1.5; }
+.cluster { cursor: pointer; transition: all .2s; padding: 16px; }
+.cluster:hover { border-color: var(--accent); }
+.cluster .name { font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+.cluster .tags { display: flex; flex-wrap: wrap; gap: 4px; }
+.cluster .tag { font-size: 10px; padding: 2px 6px; border-radius: 4px; }
+.seg-card { border-top: 3px solid var(--accent); }
+.seg-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 12px; }
+.seg-row { display: flex; gap: 8px; margin-bottom: 8px; font-size: 12px; }
+.seg-row .label { color: var(--dim); min-width: 100px; font-weight: 600; flex-shrink: 0; }
+.seg-row .val { color: var(--text); line-height: 1.4; }
+.pain-card { padding: 14px; }
+.pain { color: var(--red); font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+.solution { color: var(--green); font-size: 12px; margin-bottom: 8px; }
+.severity-bar { background: #c8a97e15; border-radius: 4px; height: 5px; }
+.severity-fill { background: var(--accent); border-radius: 4px; height: 100%; }
+.severity-label { color: var(--dim); font-size: 10px; text-align: right; margin-top: 3px; }
+.risk-item { border-left: 3px solid var(--orange); margin-bottom: 12px; padding: 16px; }
+.risk-item .head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.risk-item .head h4 { font-size: 14px; font-weight: 600; }
+.risk-score { font-size: 12px; font-weight: 700; padding: 2px 10px; border-radius: 6px; }
+.risk-meta { display: flex; gap: 24px; font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+.risk-meta strong { color: var(--text); }
+.risk-mitig { color: var(--green); font-size: 12px; }
+.journey-stage { margin-bottom: 20px; }
+.stage-head { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.stage-badge { font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 6px; min-width: 120px; text-align: center; color: var(--bg); }
+.stage-label { color: var(--muted); font-size: 12px; }
+.stage-body { border-radius: 8px; padding: 14px; }
+.stage-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+.stage-tag { font-size: 11px; padding: 3px 10px; border-radius: 6px; }
+.stage-key { font-size: 12px; font-weight: 600; }
+.trigger-card h3 { font-size: 14px; font-weight: 600; margin-bottom: 12px; }
+.trigger-item { font-size: 12px; margin-bottom: 6px; display: flex; gap: 6px; }
+.footer { border-top: 1px solid var(--border); padding: 16px 32px; text-align: center; color: var(--dim); font-size: 11px; }
+@media (max-width: 768px) {
+  .g2, .g3, .g4, .g5 { grid-template-columns: 1fr; }
+  .content { padding: 16px; }
+  .tabs { padding: 0 8px; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1><span>◈</span> Дослідження ринку професійної косметики</h1>
+  <p>Україна • Салонна/кабінетна косметика • Academie, Ahava, CHI, Dr. Kadir, Thalgo • Квітень 2026</p>
+</div>
+
+<div class="tabs" id="tabs">
+  <button class="tab active" data-tab="overview"><span>◈</span> Огляд</button>
+  <button class="tab" data-tab="market"><span>◉</span> Ринок</button>
+  <button class="tab" data-tab="trends"><span>△</span> Тренди</button>
+  <button class="tab" data-tab="competitors"><span>◆</span> Конкуренти</button>
+  <button class="tab" data-tab="audience"><span>◎</span> Аудиторія</button>
+  <button class="tab" data-tab="risks"><span>⬡</span> Ризики</button>
+  <button class="tab" data-tab="journey"><span>→</span> Journey</button>
+</div>
+
+<div class="content">
+
+<!-- ═══════════ ОГЛЯД ═══════════ -->
+<div class="page active" id="page-overview">
+  <h2 class="section-title">Головні знахідки дослідження</h2>
+  <p class="section-sub">Ринок професійної салонної косметики e-commerce в Україні — квітень 2026</p>
+  
+  <div class="grid g6">
+    <div class="card"><div class="metric-label">◈ TAM Beauty UA</div><div class="metric-value">$2.6B</div><div class="metric-sub">Загальний ринок краси</div></div>
+    <div class="card card-accent"><div class="metric-label">◉ SAM Онлайн Проф</div><div class="metric-value accent">$15–30M</div><div class="metric-sub">Салонна профкосметика онлайн</div></div>
+    <div class="card card-accent"><div class="metric-label">◎ SOM Рік 1</div><div class="metric-value accent">$60–250K</div><div class="metric-sub">100–400 замовлень/міс</div></div>
+    <div class="card"><div class="metric-label">△ CAGR E-com</div><div class="metric-value">12–18%</div><div class="metric-sub">Зростання онлайн-beauty</div></div>
+    <div class="card"><div class="metric-label">◆ Середній чек</div><div class="metric-value">₴1.5–3K</div><div class="metric-sub">$36–72 за замовлення</div></div>
+    <div class="card"><div class="metric-label">⬡ CAC у ніші</div><div class="metric-value">$15–40</div><div class="metric-sub">Вартість залучення клієнта</div></div>
+  </div>
+
+  <div class="insight green">
+    <div class="insight-title">Головний висновок</div>
+    <p><strong>Вільна позиція «Розумний beauty-партнер»</strong> — жоден із 12+ конкурентів не поєднує AI-діагностику, підписочну модель, системний контент та lifecycle-маркетинг. Це технологічно доступне і стратегічно вигідне позиціонування.</p>
+  </div>
+
+  <div class="grid g2">
+    <div class="insight">
+      <div class="insight-title">Чому саме ця ніша?</div>
+      <p>Салонна профкосметика (Academie, Dr. Kadir, CHI, Thalgo) — маржинальна, з високим LTV, лояльною аудиторією та чіткою прив'язкою до рекомендацій косметологів.</p>
+    </div>
+    <div class="insight purple">
+      <div class="insight-title">Головний тригер покупки</div>
+      <p><strong>Рекомендація косметолога</strong> — #1 тригер для першої покупки. Партнерства з косметологами та B2B-модель критичні для зростання.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Рекомендоване позиціонування</h2>
+  <p class="section-sub">5 ключових компонентів</p>
+  <div class="grid g5">
+    <div class="card pos-card"><div class="icon">🧠</div><div class="title">AI-діагностика</div><div class="desc">Quiz/фото-аналіз шкіри → персональний протокол</div></div>
+    <div class="card pos-card"><div class="icon">✦</div><div class="title">Кураторський портфель</div><div class="desc">Перевірені салонні бренди, офіційні поставки</div></div>
+    <div class="card pos-card"><div class="icon">📖</div><div class="title">Контент-експертиза</div><div class="desc">Beauty-медіа з реальними косметологами</div></div>
+    <div class="card pos-card"><div class="icon">🔄</div><div class="title">Subscription</div><div class="desc">Автопоповнення + корекція рутини з часом</div></div>
+    <div class="card pos-card"><div class="icon">📊</div><div class="title">Lifecycle-трекінг</div><div class="desc">Before→During→After, видимий результат</div></div>
+  </div>
+</div>
+
+<!-- ═══════════ РИНОК ═══════════ -->
+<div class="page" id="page-market">
+  <h2 class="section-title">Розмір ринку та динаміка</h2>
+  <p class="section-sub">TAM → SAM → SOM воронка та ключові метрики</p>
+
+  <div class="grid g2">
+    <div class="card">
+      <h3 style="color:var(--accent);font-size:14px;font-weight:600;margin-bottom:16px">TAM → SAM → SOM Воронка</h3>
+      <div class="funnel-row"><div class="funnel-label"><span>TAM — Весь Beauty UA</span><span style="color:var(--dim)">$2.6B</span></div><div class="funnel-bar" style="width:100%;background:var(--dim);opacity:.5"></div></div>
+      <div class="funnel-row"><div class="funnel-label"><span>↓ Тільки онлайн (~5%)</span><span style="color:var(--blue)">$130M</span></div><div class="funnel-bar" style="width:60%;background:var(--blue);opacity:.6"></div></div>
+      <div class="funnel-row"><div class="funnel-label"><span>↓ Тільки профкосметика</span><span style="color:var(--accent)">$15–30M</span></div><div class="funnel-bar" style="width:30%;background:var(--accent);opacity:.7"></div></div>
+      <div class="funnel-row"><div class="funnel-label"><span>↓ Наша частка (рік 1)</span><span style="color:var(--green)">$60–250K</span></div><div class="funnel-bar" style="width:12%;background:var(--green);opacity:.8"></div></div>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--accent);font-size:14px;font-weight:600;margin-bottom:16px">Темпи зростання (CAGR, %)</h3>
+      <div class="chart-container chart-sm"><canvas id="chartCAGR"></canvas></div>
+    </div>
+  </div>
+
+  <h2 class="section-title" style="margin-top:8px">Сезонність попиту</h2>
+  <p class="section-sub">Попит протягом року — де піки і спади</p>
+  <div class="card" style="margin-bottom:28px">
+    <div class="chart-container"><canvas id="chartSeason"></canvas></div>
+  </div>
+
+  <h2 class="section-title">Бюджет запуску (USD)</h2>
+  <p class="section-sub">Скільки потрібно для старту</p>
+  <div class="card">
+    <div class="chart-container"><canvas id="chartBudget"></canvas></div>
+    <div class="grid g2" style="margin-top:16px;gap:20px">
+      <div class="card"><div class="metric-label">↓ MVP мінімум</div><div class="metric-value">$11K</div><div class="metric-sub">Базовий запуск</div></div>
+      <div class="card card-accent"><div class="metric-label">↑ Комфортний</div><div class="metric-value accent">$43K</div><div class="metric-sub">Повний набір</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ ТРЕНДИ ═══════════ -->
+<div class="page" id="page-trends">
+  <h2 class="section-title">Тренди та ненасичені ніші</h2>
+  <p class="section-sub">Де найбільші можливості — аналіз «білих плям» ринку</p>
+
+  <div class="card" style="margin-bottom:28px">
+    <h3 style="color:var(--accent);font-size:14px;font-weight:600;margin-bottom:16px">Матриця можливостей: Потенціал vs Конкуренція</h3>
+    <div class="chart-container"><canvas id="chartWhiteSpots"></canvas></div>
+    <div class="insight green" style="margin-top:16px">
+      <div class="insight-title">Золота зона</div>
+      <p>Верхній лівий кут — максимальний потенціал при мінімальній конкуренції. <strong>Lifecycle-маркетинг</strong>, <strong>AI-діагностика</strong> та <strong>підписочна модель</strong> — наші пріоритети.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Категорії зростання</h2>
+  <p class="section-sub">Що зростає найшвидше у 2024–2026</p>
+  <div class="grid g2" style="margin-bottom:28px">
+    <div class="card trend-card" style="border-color:var(--accent)"><div class="head"><h4>Космецевтика</h4><span class="trend-badge" style="background:#c8a97e20;color:var(--accent)">$146.4B до 2032</span></div><p>Dr. Kadir, Mesoestetic, Environ — вже в цій парадигмі. Стирання межі між косметикою та дерматологією.</p></div>
+    <div class="card trend-card" style="border-color:var(--green)"><div class="head"><h4>Skinification of Haircare</h4><span class="trend-badge" style="background:#4ecdc420;color:var(--green)">+8% у 2025, $3.5B</span></div><p>Принципи skincare (активні інгредієнти, мікробіом) переносяться на волосся та скальп.</p></div>
+    <div class="card trend-card" style="border-color:var(--purple)"><div class="head"><h4>Scalp Care</h4><span class="trend-badge" style="background:#9b7ed820;color:var(--purple)">Новий підсегмент</span></div><p>Діагностика скальпа, серуми, ексфоліанти. Від нішевого — до мейнстріму.</p></div>
+    <div class="card trend-card" style="border-color:var(--blue)"><div class="head"><h4>AI в Beauty</h4><span class="trend-badge" style="background:#5b9bd520;color:var(--blue)">$4.4B → $10.9B</span></div><p>CAGR 19.6%. Quiz-based підбір, фото-аналіз, AI-чатботи. Доступно для стартапу.</p></div>
+  </div>
+
+  <h2 class="section-title">Споживчі тренди</h2>
+  <p class="section-sub">Як змінюється поведінка покупця</p>
+  <div class="grid g3">
+    <div class="card pos-card"><div class="icon">🎯</div><div class="title">Від продукту → до протоколу</div><div class="desc">Повна система догляду з видимим результатом</div></div>
+    <div class="card pos-card"><div class="icon">🔬</div><div class="title">Прозорість складу</div><div class="desc">INCI-грамотність зростає, потрібні докази</div></div>
+    <div class="card pos-card"><div class="icon">✨</div><div class="title">Quiet Luxury</div><div class="desc">Менше продуктів, вища якість кожного</div></div>
+    <div class="card pos-card"><div class="icon">🏠</div><div class="title">Салон → додому</div><div class="desc">Професійний результат вдома</div></div>
+    <div class="card pos-card"><div class="icon">🧬</div><div class="title">Wellness-інтеграція</div><div class="desc">Зв'язок шкіри зі стресом та харчуванням</div></div>
+    <div class="card pos-card"><div class="icon">📱</div><div class="title">Social Commerce</div><div class="desc">TikTok Shop — 4-й beauty-рітейлер UK</div></div>
+  </div>
+</div>
+
+<!-- ═══════════ КОНКУРЕНТИ ═══════════ -->
+<div class="page" id="page-competitors">
+  <h2 class="section-title">Конкурентне середовище</h2>
+  <p class="section-sub">12 прямих конкурентів — від гігантів до нішевих</p>
+
+  <div class="card" style="margin-bottom:28px">
+    <h3 style="color:var(--accent);font-size:14px;font-weight:600;margin-bottom:16px">Трафік конкурентів (тис. візитів/міс, лог. шкала)</h3>
+    <div class="chart-container"><canvas id="chartTraffic"></canvas></div>
+    <div class="insight red" style="margin-top:16px">
+      <div class="insight-title">Масштаб розриву</div>
+      <p>MakeUp.ua має <strong>в 180 разів</strong> більше трафіку, ніж найбільший нішевий конкурент (Beautis). Конкурувати за загальні запити — безглуздо. Перемога — у long-tail SEO, експертному контенті та referral.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Кластери конкуренції</h2>
+  <p class="section-sub">4 стратегічні групи конкурентів</p>
+  <div class="grid g4" style="margin-bottom:16px">
+    <div class="card cluster" style="border-color:var(--red)" onclick="showCluster(0)"><div class="name" style="color:var(--red)">🏢 Гіганти</div><div class="tags"><span class="tag" style="background:#ff6b6b20;color:var(--red)">MakeUp.ua</span><span class="tag" style="background:#ff6b6b20;color:var(--red)">Parfums.ua</span></div></div>
+    <div class="card cluster" style="border-color:var(--blue)" onclick="showCluster(1)"><div class="name" style="color:var(--blue)">📋 Каталог + оригінал</div><div class="tags"><span class="tag" style="background:#5b9bd520;color:var(--blue)">Kosmetolog</span><span class="tag" style="background:#5b9bd520;color:var(--blue)">Profistyle</span><span class="tag" style="background:#5b9bd520;color:var(--blue)">ProfCare</span></div></div>
+    <div class="card cluster" style="border-color:var(--accent)" onclick="showCluster(2)"><div class="name" style="color:var(--accent)">✦ Кураторський підбір</div><div class="tags"><span class="tag" style="background:#c8a97e20;color:var(--accent)">KrasotaShop</span><span class="tag" style="background:#c8a97e20;color:var(--accent)">Beautis</span><span class="tag" style="background:#c8a97e20;color:var(--accent)">Sisters</span><span class="tag" style="background:#c8a97e20;color:var(--accent)">Kisa.ua</span></div></div>
+    <div class="card cluster" style="border-color:var(--green)" onclick="showCluster(3)"><div class="name" style="color:var(--green)">🔬 Наука</div><div class="tags"><span class="tag" style="background:#4ecdc420;color:var(--green)">A's Lab</span><span class="tag" style="background:#4ecdc420;color:var(--green)">Dermal-cos</span><span class="tag" style="background:#4ecdc420;color:var(--green)">Cosmy</span></div></div>
+  </div>
+  <div id="clusterInfo"></div>
+
+  <div class="card" style="margin-top:20px">
+    <h3 style="color:var(--accent);font-size:14px;font-weight:600;margin-bottom:16px">Радар можливостей — де конкуренти слабкі?</h3>
+    <div class="chart-container"><canvas id="chartRadar"></canvas></div>
+    <div class="insight green" style="margin-top:16px">
+      <div class="insight-title">Розрив = можливість</div>
+      <p>Зелена зона (Ідеал) показує, де НІХТО не досягає максимуму: <strong>AI/Tech, Підписки, Lifecycle</strong> — всі конкуренти на 0–1 з 5. Це — наше конкурентне вікно.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ АУДИТОРІЯ ═══════════ -->
+<div class="page" id="page-audience">
+  <h2 class="section-title">Сегменти аудиторії</h2>
+  <p class="section-sub">5 сегментів з пріоритетами для старту</p>
+
+  <div class="grid g2" style="margin-bottom:28px">
+    <div class="card">
+      <h3 style="color:var(--accent);font-size:14px;font-weight:600;margin-bottom:16px">Середній чек vs LTV потенціал</h3>
+      <div class="chart-container chart-sm"><canvas id="chartSegments"></canvas></div>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--accent);font-size:14px;font-weight:600;margin-bottom:16px">Канали: Релевантність vs Довіра</h3>
+      <div class="chart-container chart-sm"><canvas id="chartChannels"></canvas></div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Профілі пріоритетних сегментів</h2>
+  <p class="section-sub">Деталі по кожному</p>
+  <div class="grid g2" style="margin-bottom:28px">
+    <div class="card seg-card" style="border-color:var(--accent)">
+      <h3 style="color:var(--accent)">⭐ Досвідчена доглядалиця</h3>
+      <div class="seg-row"><span class="label">Вік:</span><span class="val">35–50</span></div>
+      <div class="seg-row"><span class="label">Чек:</span><span class="val">₴2 000–5 000+</span></div>
+      <div class="seg-row"><span class="label">Мотивація:</span><span class="val">Anti-age, збереження молодості, «інвестиція в себе»</span></div>
+      <div class="seg-row"><span class="label">Поведінка:</span><span class="val">Вже користується профкосметикою, має усталені бренди, відкрита до нових рішень</span></div>
+      <div class="seg-row"><span class="label">Бар'єри:</span><span class="val">Не хоче ризикувати з новим магазином, цінує стабільність</span></div>
+      <div class="seg-row"><span class="label">Канали:</span><span class="val">Instagram, Facebook, косметолог, Google</span></div>
+      <div class="seg-row"><span class="label">Чому пріоритет:</span><span class="val">Найвищий LTV — стабільні повторні покупки кожні 1–3 місяці</span></div>
+    </div>
+    <div class="card seg-card" style="border-color:var(--green)">
+      <h3 style="color:var(--green)">⭐ Скінтелектуалка</h3>
+      <div class="seg-row"><span class="label">Вік:</span><span class="val">25–35</span></div>
+      <div class="seg-row"><span class="label">Чек:</span><span class="val">₴1 000–3 000</span></div>
+      <div class="seg-row"><span class="label">Мотивація:</span><span class="val">Ефективність, науковий підхід, доказова косметологія</span></div>
+      <div class="seg-row"><span class="label">Поведінка:</span><span class="val">Досліджує INCI, читає блоги, порівнює, перевіряє клінічні дослідження</span></div>
+      <div class="seg-row"><span class="label">Бар'єри:</span><span class="val">Скептична до маркетингу, потребує доказів і фактів</span></div>
+      <div class="seg-row"><span class="label">Канали:</span><span class="val">Instagram, TikTok, YouTube, Reddit, блоги</span></div>
+      <div class="seg-row"><span class="label">Чому пріоритет:</span><span class="val">Стає амбасадором бренду — активно рекомендує у соцмережах</span></div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Болі аудиторії</h2>
+  <p class="section-sub">Основні болі, які ми вирішуємо</p>
+  <div class="grid g3">
+    <div class="card pain-card"><div class="pain">😟 «Не знаю, з чого почати»</div><div class="solution">✅ AI-quiz → персональний протокол</div><div class="severity-bar"><div class="severity-fill" style="width:90%"></div></div><div class="severity-label">Гострота: 90%</div></div>
+    <div class="card pain-card"><div class="pain">😟 «Заплатила 2К, а не підійшло»</div><div class="solution">✅ Discovery-набори + консультація</div><div class="severity-bar"><div class="severity-fill" style="width:85%"></div></div><div class="severity-label">Гострота: 85%</div></div>
+    <div class="card pain-card"><div class="pain">😟 «Як відрізнити оригінал?»</div><div class="solution">✅ Сертифікати, QR, video-unboxing</div><div class="severity-bar"><div class="severity-fill" style="width:80%"></div></div><div class="severity-label">Гострота: 80%</div></div>
+    <div class="card pain-card"><div class="pain">😟 «Косметолог порадила, але де?»</div><div class="solution">✅ Referral-програма з косметологами</div><div class="severity-bar"><div class="severity-fill" style="width:75%"></div></div><div class="severity-label">Гострота: 75%</div></div>
+    <div class="card pain-card"><div class="pain">😟 «Які продукти сумісні?»</div><div class="solution">✅ Протоколи-комплекти, підбір</div><div class="severity-bar"><div class="severity-fill" style="width:70%"></div></div><div class="severity-label">Гострота: 70%</div></div>
+    <div class="card pain-card"><div class="pain">😟 «Не бачу результату»</div><div class="solution">✅ Lifecycle-трекінг before/after</div><div class="severity-bar"><div class="severity-fill" style="width:65%"></div></div><div class="severity-label">Гострота: 65%</div></div>
+  </div>
+</div>
+
+<!-- ═══════════ РИЗИКИ ═══════════ -->
+<div class="page" id="page-risks">
+  <h2 class="section-title">Карта ризиків</h2>
+  <p class="section-sub">Оцінка ймовірності та впливу кожного ризику</p>
+
+  <div class="card" style="margin-bottom:28px">
+    <h3 style="color:var(--accent);font-size:14px;font-weight:600;margin-bottom:16px">Матриця ризиків: Ймовірність × Вплив</h3>
+    <div class="chart-container"><canvas id="chartRisks"></canvas></div>
+    <div style="display:flex;gap:20px;justify-content:center;margin-top:12px">
+      <span style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)"><span style="width:10px;height:10px;border-radius:50%;background:var(--red);display:inline-block"></span> Критичний (>50)</span>
+      <span style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)"><span style="width:10px;height:10px;border-radius:50%;background:var(--orange);display:inline-block"></span> Помірний (30–50)</span>
+      <span style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)"><span style="width:10px;height:10px;border-radius:50%;background:var(--green);display:inline-block"></span> Низький (<30)</span>
+    </div>
+  </div>
+
+  <h2 class="section-title">Деталізація ризиків</h2>
+  <p class="section-sub">Кожен ризик з планом мітигації</p>
+  <div id="risksList"></div>
+</div>
+
+<!-- ═══════════ JOURNEY ═══════════ -->
+<div class="page" id="page-journey">
+  <h2 class="section-title">Customer Journey Map</h2>
+  <p class="section-sub">Від першого знайомства до лояльного клієнта</p>
+
+  <div class="card" style="margin-bottom:28px" id="journeyMap"></div>
+
+  <div class="grid g3">
+    <div class="card trigger-card"><h3 style="color:var(--green)">Що спонукає СПРОБУВАТИ</h3>
+      <div class="trigger-item"><span style="color:var(--green)">→</span> Рекомендація косметолога</div>
+      <div class="trigger-item"><span style="color:var(--green)">→</span> Проблема, яку масмаркет не вирішує</div>
+      <div class="trigger-item"><span style="color:var(--green)">→</span> Discovery kit / подарунок</div>
+      <div class="trigger-item"><span style="color:var(--green)">→</span> Вірусний before/after контент</div>
+      <div class="trigger-item"><span style="color:var(--green)">→</span> Промокод на першу покупку</div>
+    </div>
+    <div class="card trigger-card"><h3 style="color:var(--accent)">Що УТРИМУЄ</h3>
+      <div class="trigger-item"><span style="color:var(--accent)">♦</span> Видимий результат</div>
+      <div class="trigger-item"><span style="color:var(--accent)">♦</span> Персональний сервіс</div>
+      <div class="trigger-item"><span style="color:var(--accent)">♦</span> Зручність повторного замовлення</div>
+      <div class="trigger-item"><span style="color:var(--accent)">♦</span> Програма лояльності</div>
+      <div class="trigger-item"><span style="color:var(--accent)">♦</span> Довіра до автентичності</div>
+    </div>
+    <div class="card trigger-card"><h3 style="color:var(--red)">Що змушує ПІТИ</h3>
+      <div class="trigger-item"><span style="color:var(--red)">✕</span> Знайшли дешевше (100–200 грн)</div>
+      <div class="trigger-item"><span style="color:var(--red)">✕</span> Товар не в наявності</div>
+      <div class="trigger-item"><span style="color:var(--red)">✕</span> Поганий досвід (упаковка, доставка)</div>
+      <div class="trigger-item"><span style="color:var(--red)">✕</span> Косметолог порадила інше</div>
+      <div class="trigger-item"><span style="color:var(--red)">✕</span> Не побачили результату</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div class="footer">01_research/ • Комплексне дослідження ринку професійної косметики • Дані актуальні на квітень 2026</div>
+
+<script>
+// ─── TABS ──────────────────────────────
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('page-' + tab.dataset.tab).classList.add('active');
+    initCharts(tab.dataset.tab);
+  });
+});
+
+const C = { accent:'#c8a97e', green:'#4ecdc4', red:'#ff6b6b', blue:'#5b9bd5', purple:'#9b7ed8', orange:'#f4a261', dim:'#5a5c63', muted:'#8b8d93', text:'#e8e6e1', border:'#1e2330', bg:'#0a0c10', card:'#12151c' };
+Chart.defaults.color = C.muted;
+Chart.defaults.borderColor = C.border;
+Chart.defaults.font.family = "'DM Sans', sans-serif";
+const charts = {};
+
+function initCharts(tab) {
+  if (tab === 'market' && !charts.cagr) {
+    charts.cagr = new Chart(document.getElementById('chartCAGR'), {
+      type: 'bar', data: {
+        labels: ['Beauty UA','Skincare EU','Haircare глоб.','Dermocosmetics','E-com Beauty UA','AI in Beauty'],
+        datasets: [{ data: [3.5,5.5,6.5,9,15,20], backgroundColor: [C.dim,C.blue,C.purple,C.orange,C.green,C.accent], borderRadius: 6, barThickness: 22 }]
+      }, options: { indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.raw+'% CAGR'}}}, scales:{x:{grid:{display:false},max:25},y:{grid:{display:false}}} }
+    });
+    charts.season = new Chart(document.getElementById('chartSeason'), {
+      type: 'line', data: {
+        labels: ['Січ','Лют','Бер','Кві','Тра','Чер','Лип','Сер','Вер','Жов','Лис','Гру'],
+        datasets: [{ data: [35,40,85,55,50,40,35,38,65,70,90,95], borderColor: C.accent, backgroundColor: C.accent+'20', fill: true, tension: .4, pointBackgroundColor: C.accent, pointRadius: 5, pointHoverRadius: 7 }]
+      }, options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false},tooltip:{callbacks:{title:ctx=>{const l=['Спад','Спад','Пік 8 Берез.','Стабільно','Стабільно','Спад','Спад','Спад','Зростання','Зростання','Пік BF','Пік НР'];return ctx[0].label+': '+l[ctx[0].dataIndex]},label:ctx=>'Попит: '+ctx.raw+'%'}}}, scales:{y:{min:0,max:100,grid:{color:C.border}},x:{grid:{display:false}}} }
+    });
+    charts.budget = new Chart(document.getElementById('chartBudget'), {
+      type: 'bar', data: {
+        labels: ['Сайт (MVP)','Початковий stock','Брендинг','Фото/відео','Юридичне','Маркетинг (3 міс)'],
+        datasets: [
+          { label:'Мінімум', data:[2000,5000,1000,500,300,2000], backgroundColor: C.dim+'aa', borderRadius:4, barThickness:20 },
+          { label:'Комфорт', data:[8000,20000,3000,3000,1000,8000], backgroundColor: C.accent, borderRadius:4, barThickness:20 }
+        ]
+      }, options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'top',labels:{boxWidth:12,font:{size:11}}}}, scales:{y:{grid:{color:C.border}},x:{grid:{display:false}}} }
+    });
+  }
+  if (tab === 'trends' && !charts.whiteSpots) {
+    charts.whiteSpots = new Chart(document.getElementById('chartWhiteSpots'), {
+      type: 'bubble', data: {
+        datasets: [
+          {label:'AI-діагностика',data:[{x:5,y:92,r:14}],backgroundColor:C.green+'aa'},
+          {label:'Lifecycle-маркетинг',data:[{x:3,y:95,r:15}],backgroundColor:C.green+'aa'},
+          {label:'Підписочна модель',data:[{x:2,y:88,r:13}],backgroundColor:C.green+'aa'},
+          {label:'Контент-медіа + магазин',data:[{x:15,y:85,r:12}],backgroundColor:C.accent+'aa'},
+          {label:'B2B+B2C платформа',data:[{x:20,y:65,r:10}],backgroundColor:C.orange+'aa'},
+          {label:'Чоловічий догляд',data:[{x:5,y:70,r:10}],backgroundColor:C.orange+'aa'},
+          {label:'Скальп-клініка онлайн',data:[{x:3,y:60,r:9}],backgroundColor:C.blue+'aa'},
+        ]
+      }, options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'right',labels:{boxWidth:10,font:{size:10}}}}, scales:{x:{title:{display:true,text:'Конкуренція (%) →',color:C.dim},min:0,max:30,grid:{color:C.border}},y:{title:{display:true,text:'← Потенціал (%)',color:C.dim},min:50,max:100,grid:{color:C.border}}} }
+    });
+  }
+  if (tab === 'competitors' && !charts.traffic) {
+    charts.traffic = new Chart(document.getElementById('chartTraffic'), {
+      type: 'bar', data: {
+        labels: ['MakeUp','Parfums','Beautis','Kosmetolog','KrasotaShop','Sisters',"A's Lab",'Kisa.ua','ProfCare','Profistyle'],
+        datasets: [{ data: [7700,228,42.5,30,20,12,8.5,7,5,4],
+          backgroundColor: ['#ff6b6baa','#ff6b6baa',C.accent,C.accent,C.accent,C.accent,C.accent,C.accent,C.accent,C.accent], borderRadius: 6, barThickness: 28 }]
+      }, options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.raw.toLocaleString()+'K візитів/міс'}}}, scales:{y:{type:'logarithmic',grid:{color:C.border},ticks:{callback:v=>v>=1000?v/1000+'M':v+'K'}},x:{grid:{display:false},ticks:{font:{size:10}}}} }
+    });
+    charts.radar = new Chart(document.getElementById('chartRadar'), {
+      type: 'radar', data: {
+        labels: ['AI/Tech','Контент','Підписки','Експертність','Lifecycle','SEO','Портфель'],
+        datasets: [
+          { label:'Ідеал (наша ціль)', data:[5,5,5,5,5,5,4], borderColor:C.green, backgroundColor:C.green+'15', borderWidth:2 },
+          { label:'MakeUp', data:[2,2,0,1,1,5,5], borderColor:C.red, backgroundColor:C.red+'08', borderDash:[4,4] },
+          { label:'Kisa.ua', data:[1,3,0,4,1,3,4], borderColor:C.accent, backgroundColor:C.accent+'10' },
+        ]
+      }, options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom',labels:{boxWidth:12,font:{size:11}}}}, scales:{r:{min:0,max:5,ticks:{stepSize:1,color:C.dim,backdropColor:'transparent'},grid:{color:C.border},pointLabels:{font:{size:11}}}} }
+    });
+  }
+  if (tab === 'audience' && !charts.segments) {
+    charts.segments = new Chart(document.getElementById('chartSegments'), {
+      type: 'bubble', data: {
+        datasets: [
+          {label:'Досвідчена доглядалиця',data:[{x:3500,y:90,r:18}],backgroundColor:C.accent+'bb'},
+          {label:'Скінтелектуалка',data:[{x:2000,y:75,r:15}],backgroundColor:C.green+'bb'},
+          {label:'Косметолог (B2B)',data:[{x:5000,y:85,r:12}],backgroundColor:C.purple+'bb'},
+          {label:'Новачок',data:[{x:1000,y:40,r:12}],backgroundColor:C.blue+'bb'},
+          {label:'Чоловік',data:[{x:1500,y:30,r:8}],backgroundColor:C.orange+'bb'},
+        ]
+      }, options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:10}}}}, scales:{x:{title:{display:true,text:'Середній чек (грн) →',color:C.dim},grid:{color:C.border}},y:{title:{display:true,text:'← LTV Score',color:C.dim},min:0,max:100,grid:{color:C.border}}} }
+    });
+    charts.channels = new Chart(document.getElementById('chartChannels'), {
+      type: 'bar', data: {
+        labels: ['Referral косметолога','Instagram','Google (SEO)','Email','YouTube','TikTok','Telegram','Facebook'],
+        datasets: [
+          { label:'Релевантність', data:[95,90,90,80,75,65,55,50], backgroundColor:C.accent, borderRadius:4, barThickness:10 },
+          { label:'Довіра', data:[98,65,75,60,70,45,55,50], backgroundColor:C.green, borderRadius:4, barThickness:10 },
+        ]
+      }, options: { indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:10}}}}, scales:{x:{max:100,grid:{display:false}},y:{grid:{display:false},ticks:{font:{size:10}}}} }
+    });
+  }
+  if (tab === 'risks' && !charts.risks) {
+    const riskData = [
+      {risk:'Цінова конкуренція',p:85,i:60,m:'Конкурувати сервісом, персоналізацією, контентом'},
+      {risk:'Низький трафік на старті',p:80,i:65,m:'SEO long-tail + контент + referral'},
+      {risk:'Війна / купівельна спроможність',p:75,i:55,m:'Фокус на преміум-ЦА + discovery-набори'},
+      {risk:'Скепсис до нового магазину',p:60,i:80,m:'Сертифікати, video-unboxing, гарантія'},
+      {risk:'Проблеми з постачальниками',p:50,i:85,m:'Почати з 5–7 брендів, де є контакти'},
+      {risk:'Регуляторні зміни (ТР)',p:25,i:30,m:'Працюємо з офіційними дистрибуторами'},
+    ];
+    charts.risks = new Chart(document.getElementById('chartRisks'), {
+      type: 'bubble', data: {
+        datasets: riskData.map(r => {
+          const score = Math.round(r.p * r.i / 100);
+          const col = score > 50 ? C.red : score > 30 ? C.orange : C.green;
+          return { label: r.risk, data: [{x:r.p,y:r.i,r:8}], backgroundColor: col+'bb' };
+        })
+      }, options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'right',labels:{boxWidth:10,font:{size:10}}}}, scales:{x:{title:{display:true,text:'Ймовірність (%) →',color:C.dim},min:0,max:100,grid:{color:C.border}},y:{title:{display:true,text:'← Вплив (%)',color:C.dim},min:0,max:100,grid:{color:C.border}}} }
+    });
+    // render list
+    const list = document.getElementById('risksList');
+    riskData.sort((a,b) => (b.p*b.i)-(a.p*a.i)).forEach(r => {
+      const score = Math.round(r.p * r.i / 100);
+      const col = score > 50 ? C.red : score > 30 ? C.orange : C.green;
+      list.innerHTML += `<div class="card risk-item" style="border-color:${col}">
+        <div class="head"><h4>${r.risk}</h4><span class="risk-score" style="background:${col}20;color:${col}">Score: ${score}</span></div>
+        <div class="risk-meta"><span>Ймовірність: <strong>${r.p}%</strong></span><span>Вплив: <strong>${r.i}%</strong></span></div>
+        <div class="risk-mitig">✅ Мітигація: ${r.m}</div>
+      </div>`;
+    });
+  }
+}
+
+// ─── CLUSTERS ──────────────────────────
+const clusterDescs = [
+  'Масштаб, трафік, ціна, впізнаваність. Мають профкосметику в каталозі, але не фокусуються. Головна загроза — SEO/PPC за брендові запити типу «Academie купити».',
+  'Конкурують широтою та ціною. Мінімальний контент. Лояльність тримається на ціні та швидкості доставки.',
+  'Експертність, підбір, консультації. Емоційний зв\'язок з клієнтом. Це наш кластер — але ми додаємо AI та lifecycle.',
+  'Глибина знань, науковий підхід. Вузька аудиторія «скінтелектуалів». Сильні у контенті, слабкі у масштабі.'
+];
+const clusterColors = [C.red, C.blue, C.accent, C.green];
+function showCluster(i) {
+  const el = document.getElementById('clusterInfo');
+  el.innerHTML = `<div class="insight" style="border-color:${clusterColors[i]};background:${clusterColors[i]}08"><div class="insight-title" style="color:${clusterColors[i]}">Кластер ${i}</div><p>${clusterDescs[i]}</p></div>`;
+}
+
+// ─── JOURNEY ──────────────────────────
+const stages = [
+  {name:'Awareness',label:'Як дізнаються',color:C.blue,width:'100%',items:['Рекомендація косметолога','Instagram/TikTok','Google за проблемою','Рекомендації подруг'],key:'Рекомендація косметолога — тригер #1'},
+  {name:'Consideration',label:'Як порівнюють',color:C.purple,width:'80%',items:['Google за брендом','Порівняння цін','Відгуки','Консультація'],key:'Ціна та наявність — ключові фактори'},
+  {name:'Decision',label:'Що впливає',color:C.accent,width:'60%',items:['Ціна (різниця 10-20%)','Гарантія оригіналу','Швидкість доставки','Консультація'],key:'Довіра до магазину = конверсія'},
+  {name:'Purchase',label:'Покупка',color:C.green,width:'40%',items:['Перша покупка','Чек: ₴1 500–3 000','Безкоштовна доставка'],key:'Discovery-набори знижують бар\'єр'},
+  {name:'Retention',label:'Після покупки',color:C.orange,width:'28%',items:['Результат (2–4 тижні)','Повторна (1–3 міс)','Word of mouth'],key:'Lifecycle-трекінг = повторні покупки'},
+];
+const jm = document.getElementById('journeyMap');
+stages.forEach((s,i) => {
+  const tags = s.items.map(it => `<span class="stage-tag" style="background:${s.color}15;color:${s.color};border:1px solid ${s.color}30">${it}</span>`).join('');
+  jm.innerHTML += `<div class="journey-stage">
+    <div class="stage-head"><div class="stage-badge" style="background:${s.color}">${s.name}</div><span class="stage-label">${s.label}</span>${i<stages.length-1?'<span style="color:var(--dim);font-size:16px;margin-left:auto">↓</span>':''}</div>
+    <div class="stage-body" style="background:${s.color}10;border:1px solid ${s.color}20;width:${s.width}"><div class="stage-tags">${tags}</div><div class="stage-key">💡 ${s.key}</div></div>
+  </div>`;
+});
+
+// Init first tab charts (none needed for overview)
+</script>
+</body>
+</html>
